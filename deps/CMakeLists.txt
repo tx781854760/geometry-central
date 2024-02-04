@@ -166,7 +166,6 @@ if (NOT TARGET happly)
 endif()
 
 # Find other simpler dependencies
-list(APPEND GC_DEP_LIBS nanoflann)
 list(APPEND GC_DEP_LIBS happly)
 
 # == Ensure all paths are absolute
