@@ -1,0 +1,20 @@
+{
+  "name" : "geometry-central",
+  "version-string" : "1.0.0",
+  "builtin-baseline" : "11e79b1072c7f12d84258b77948cda3b166aac59",
+  "dependencies" : [
+    "eigen3"
+    , {
+    "name" : "nanort",
+    "version>=" : "2019-08-20#3"
+  }, {
+    "name" : "nanoflann",
+    "version>=" : "1.5.1"
+  } ],
+  "overrides": [
+    {
+      "name": "eigen3",
+      "version": "3.3.9"
+    }
+  ]
+}

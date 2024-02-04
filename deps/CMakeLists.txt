@@ -22,6 +22,8 @@ message("--  resolving Eigen dependency:")
 set(GC_EIGEN_LOCATION "" CACHE STRING "Path to Eigen installation. Only needed if Eigen is not already available in CMAKE, will not be found by find_package(), and should not be auto-downloaded.")
 set(GC_ALWAYS_DOWNLOAD_EIGEN "OFF" CACHE BOOL "Prefer to auto-download a copy Eigen if a system copy might exist.")
 
+find_package(Eigen3 REQUIRED)
+
 # (1) Target exists already from somewhere else
 if(TARGET Eigen3::Eigen)
   if(${GC_EIGEN_LOCATION})
@@ -144,21 +146,18 @@ endif()
 
 # ===  done finding Suitesparse
 
-if (NOT TARGET nanort)
-    add_library(nanort INTERFACE)
-    target_include_directories(nanort INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/nanort/include>)
+find_package(nanoflann REQUIRED)
+if(nanoflann_FOUND)
+    message(STATUS "--  success. find_package() succeeded with nanoflann")
+else()
+    message(FATAL_ERROR "nanoflann not found")
 endif()
 
-if (NOT TARGET nanoflann)
-    add_library(nanoflann INTERFACE)
-    target_include_directories(nanoflann INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/nanoflann/include>)
-
-    # For backward compatibility, we need to make a symlink in the build directory.
-    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/nanoflann)
-    file(CREATE_LINK
-        ${CMAKE_CURRENT_SOURCE_DIR}/nanoflann/include/nanoflann.hpp
-        ${CMAKE_CURRENT_BINARY_DIR}/include/nanoflann/nanoflann.hpp SYMBOLIC)
-    target_include_directories(nanoflann INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>)
+find_path(NANORT_INCLUDE_DIRS "nanort.h")
+if(NANORT_INCLUDE_DIRS)
+    message(STATUS "--  success. Found nanort at ${NANORT_INCLUDE_DIRS}")
+else()
+    message(FATAL_ERROR "nanort not found")
 endif()
 
 if (NOT TARGET happly)
@@ -167,7 +166,6 @@ if (NOT TARGET happly)
 endif()
 
 # Find other simpler dependencies
-list(APPEND GC_DEP_LIBS nanort)
 list(APPEND GC_DEP_LIBS nanoflann)
 list(APPEND GC_DEP_LIBS happly)
 

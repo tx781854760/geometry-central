@@ -25,7 +25,7 @@ struct Vector3Adaptor {
 class NearestNeighborFinder::KNNImpl {
 public:
   // == Types
-  typedef nanoflann::KDTreeSingleIndexAdaptor<nanoflann::L2_Simple_Adaptor<double, Vector3Adaptor>, Vector3Adaptor, 3>
+  typedef nanoflann::KDTreeSingleIndexAdaptor<nanoflann::L2_Simple_Adaptor<double, Vector3Adaptor>, Vector3Adaptor, 3, size_t>
       KD_Tree_T;
 
   // == Constructors
@@ -80,8 +80,8 @@ public:
     // nanoflann wants a SQUARED raidus
     double radSq = rad * rad;
 
-    std::vector<std::pair<size_t, double>> outPairs;
-    tree.radiusSearch(&query[0], radSq, outPairs, nanoflann::SearchParams());
+    std::vector<nanoflann::ResultItem<>> outPairs;
+    tree.radiusSearch(&query[0], radSq, outPairs, nanoflann::SearchParameters());
 
     // copy in to an array off indices
     std::vector<size_t> outInds(outPairs.size());
